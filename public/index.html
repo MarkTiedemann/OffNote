@@ -1,0 +1,183 @@
+
+<title>Notepad</title>
+
+<link rel='shortcut icon' type='image/png' href='favicon.png?v=0.1.0'/>
+
+<style>
+
+    body {
+        min-height: 100vh;
+        min-width: 100vw;
+
+        position: relative;
+
+        margin: 0;
+        padding: 0;
+    }
+
+    textarea {
+        width: 100%;
+        height: 100%;
+
+        display: block;
+        margin: auto;
+        padding: 22px 33px;
+
+        font-family: 'Segoe UI';
+        font-size: 22px;
+        letter-spacing: 0.11px;
+
+        border: none;
+        outline: none;
+        border-color: transparent;
+
+        overflow: hidden;
+        resize: none;
+
+        background-color: transparent;
+    }
+
+    .toast {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: 15px;
+
+        margin-bottom: 22px;
+        padding: 10px 14.4px 9.66px 22.2px;
+        border-radius: 3px;
+
+        font-family: 'Segoe UI';
+        font-size: 20px;
+        letter-spacing: 0.11px;
+
+        color: #fff;
+        background-color: #333;
+        box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
+
+        opacity: 0;
+
+        will-change: transition;
+        transition: opacity 0.3s cubic-bezier(0, 0, 0.3, 1);
+    }
+
+    button {
+        border-radius: 3px;
+        padding: 4px 9px;
+
+        border: none;
+        outline: none;
+
+        font-family: 'Segoe UI';
+        font-size: 18px;
+        line-height: 20px;
+        letter-spacing: 1.11px;
+        text-align: center;
+
+        background-color: #333;
+    }
+
+    button:hover {
+        background-color: #474747;
+    }
+
+    .info {
+        margin-left: 12.3px;
+        color: #9bcdff;
+    }
+
+    .okay {
+        margin-left: -3.3px;
+        color: #6fd4d4;
+    }
+
+</style>
+
+<textarea wrap='hard' spellcheck='false' autofocus>
+
+
+WHAT IS A SERVICE WORKER?
+
+A service worker is a script that your browser runs in the background, separate from a web page, opening the door to features that don't need a web page or user interaction.
+
+Today, they already include features like push notifications and background sync. In the future service workers will support other things like periodic sync or geofencing.
+
+The reason this is such an exciting API is that it allows you to support offline experiences, giving developers complete control over the experience.
+
+Before service worker, there was one other API that gave users an offline experience on the web called AppCache. The major issues with AppCache are the number of gotcha's that exist. Service workers have been designed to avoid these common pain points.
+
+
+</textarea>
+
+<div class='toast'>
+    Notepad is available offline
+    <button class='info'>INFO</button>
+    <button class='okay'>OKAY</button>
+</div>
+
+<script>
+
+    // RESIZING
+
+    let textarea = document.querySelector('textarea')
+
+    let width = x =>
+        x <= 555 ? x : 555 + x / 11.11
+
+    let updateSize = () =>
+        requestAnimationFrame(() =>
+            textarea.style.width = width(window.innerWidth) + 'px')
+
+    updateSize()
+    window.onresize = updateSize
+
+    // TEXT
+
+    let loadText = () => {
+        let text = localStorage.getItem('text')
+        if (text !== null) textarea.value = text
+    }
+
+    let saveText = () =>
+        requestIdleCallback(() =>
+            localStorage.setItem('text', textarea.value))
+
+    loadText()
+    textarea.oninput = saveText
+
+    // TOAST
+
+    let toast = document.querySelector('.toast')
+    let info = document.querySelector('.info')
+    let okay = document.querySelector('.okay')
+
+    let showToast = () => {
+        if (localStorage.getItem('toast') === null)
+            requestAnimationFrame(() => toast.style.opacity = 1)
+    }
+
+    let hideToast = () => {
+        localStorage.setItem('toast', false)
+        requestAnimationFrame(() => toast.style.opacity = 0)
+    }
+
+    let url = 'https://developers.google.com/web/fundamentals/getting-started/primers/service-workers'
+
+    let openInfo = () =>
+        window.open(url, '_blank').focus()
+
+    okay.onclick = hideToast
+    info.onclick = openInfo
+
+    // SERVICE WORKER
+
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('service-worker.js')
+        .then(registration => {
+            console.log('Registered service worker:', registration)
+            showToast()
+        })
+        .catch(error => console.error('Registering service worker failed unexpectedly:', error))
+    }
+
+</script>
