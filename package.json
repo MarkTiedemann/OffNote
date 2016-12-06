@@ -1,11 +1,11 @@
 {
-  "name": "sw-notepad-demo",
-  "version": "0.1.0",
-  "description": "Service Worker Notepad Demo.",
+  "name": "OffNote",
+  "version": "0.2.0",
+  "description": "OffNote: Simple Offline Notepad",
   "devDependencies": {
     "superstatic": "^4.0.3"
   },
   "scripts": {
-    "start": "superstatic docs --port 80"
+    "start": "superstatic docs --port 3000"
   }
 }

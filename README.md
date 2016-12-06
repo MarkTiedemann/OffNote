@@ -1,9 +1,9 @@
 
-# sw-notepad-demo
+# OffNote
 
-**[Service Worker Notepad Demo.](https://marktiedemann.github.io/sw-notepad-demo/)**
+**[Simple Offline Notepad](https://marktiedemann.github.io/offnote/)**
 
-[![](https://raw.githubusercontent.com/MarkTiedemann/sw-notepad-demo/master/example.png)](https://marktiedemann.github.io/sw-notepad-demo/)
+[![](https://raw.githubusercontent.com/MarkTiedemann/OffNote/master/example.png)](https://marktiedemann.github.io/offnote/)
 
 ## Development
 

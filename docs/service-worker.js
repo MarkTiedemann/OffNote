@@ -1,92 +1,52 @@
 
-const CACHE = 'cache-v0.1.0'
-
-// PRECACHE ON INSTALLATION
+const VERSION = '0.2.0'
+const PREFETCH_CACHE = `offnote-prefetch-cache-v${VERSION}`
+const RUNTIME_CACHE = `offnote-runtime-cache-v${VERSION}`
+const DEV_ENV = location.href.startsWith('http://localhost:3000/')
+const PREFETCH_RESOURCES = [
+  '/',
+  '/favicon.png'
+]
+.map(res => DEV_ENV ? res : '/offnote' + res)
 
 self.addEventListener('install', event => {
-    console.log('Service worker installed')
-
-    event.waitUntil(
-        caches.open(CACHE)
-        .then(cache => cache.addAll(['/']))
-        .then(self.skipWaiting())
-        .then(() => console.log('Precaching successful'))
-        .catch(error => console.error('Precaching failed unexpectedly:', error))
-    )
+  event.waitUntil(
+    caches.open(PREFETCH_CACHE)
+      .then(cache => cache.addAll(PREFETCH_RESOURCES))
+      .then(() => self.skipWaiting())
+      .catch(e => DEV_ENV ? console.error('Failed to prefetch:', e) : 0)
+  )
 })
-
-// DELETE OUT OF DATE CACHES ON ACTIVATION (NOT NEEDED YET)
 
 self.addEventListener('activate', event => {
-    console.log('Service worker activated')
-
-    event.waitUntil(
-        caches.keys()
-        .then(names => {
-            return Promise.all(names.map(name => {
-                if (name !== CACHE) {
-                    console.log('Deleting out of date cache:', name)
-                    return caches.delete(name)
-                }
-            }))
-        })
-        .then(() => self.clients.claim())
-        .catch(error => console.error('Deleting failed unexpectedly:', error))
-    )
+  const currentCaches = [PREFETCH_CACHE, RUNTIME_CACHE]
+  event.waitUntil(
+    caches.keys().then(cacheNames => {
+      return cacheNames.filter(cacheName => !currentCaches.includes(cacheName))
+    }).then(cachesToDelete => {
+      return Promise.all(cachesToDelete.map(cacheToDelete => {
+        return caches.delete(cacheToDelete)
+      }))
+    })
+    .then(() => self.clients.claim())
+    .catch(e => DEV_ENV ? console.error('Failed to delete:', e) : 0)
+  )
 })
 
-// HANDLE FETCH WITH FASTEST-FIRST STRATEGY (BUT ALWAYS UPDATE CACHE)
-
 self.addEventListener('fetch', event => {
-    console.log('Handling fetch for:', event.request.url)
+  event.respondWith(
+    caches.match(event.request).then(cachedResponse => {
+      if (cachedResponse) {
+        return cachedResponse
+      }
 
-    let getResponse = callback => {
-        caches.open(CACHE).then(cache => {
-            console.log('Opening cache:', CACHE)
-
-            let notYetResponded = true
-
-            // FETCH FROM NETWORK
-
-            fetch(event.request.clone())
-            .then(response => {
-                if (response.status < 400) {
-                    console.log('Network request succeeded, updating cache:', response)
-                    cache.put(event.request, response.clone())
-                    return response
-                }
-            })
-            .then(response => {
-                if (response && notYetResponded) {
-                    console.log('Responding from network:', response)
-                    callback(response)
-                    notYetResponded = false
-                }
-            })
-            .catch(error => console.error('Using network failed unexpectedly:', error))
-
-            // MATCH IN CACHE
-
-            cache.match(event.request.clone())
-            .then(response => {
-                if (response) {
-                    console.log('Found response in cache:', response)
-                    return response
-                }
-            })
-            .then(response => {
-                if (response && notYetResponded) {
-                    console.log('Responding from cache:', response)
-                    callback(response)
-                    notYetResponded = false
-                }
-            })
-            .catch(error => console.error('Using cache failed unexpectedly:', error))
-
-        })
-        .catch(error => console.error('Opening cache failed unexpectedly:', error))
-    }
-
-    event.respondWith(new Promise(resolve => getResponse(resolve)))
-
+      return caches.open(RUNTIME_CACHE).then(cache => {
+        return fetch(event.request).then(response => {
+          return cache.put(event.request, response.clone()).then(() => {
+            return response
+          })
+        }).catch(e => DEV_ENV ? console.error('Failed to fetch:', e) : 0)
+      })
+    })
+  )
 })
