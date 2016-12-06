@@ -110,7 +110,7 @@ if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     const DEV_ENV = location.href.startsWith('http://localhost:3000/')
     navigator.serviceWorker.register('service-worker.js', {
-      scope: DEV_ENV ? '/' : '/offnote/'
+      scope: DEV_ENV ? '/' : '/OffNote/'
     })
     .catch(e => DEV_ENV ? console.error('Failed to register:', e) : 0)
   })

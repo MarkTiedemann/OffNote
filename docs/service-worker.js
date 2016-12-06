@@ -7,7 +7,7 @@ const PREFETCH_RESOURCES = [
   '/',
   '/favicon.png'
 ]
-.map(res => DEV_ENV ? res : '/offnote' + res)
+.map(res => DEV_ENV ? res : '/OffNote' + res)
 
 self.addEventListener('install', event => {
   event.waitUntil(
