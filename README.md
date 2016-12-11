@@ -1,9 +1,9 @@
 
-# OffNote
+# [✈️.note](https://marktiedemann.github.io/air.note/)
 
-**[Simple Offline Notepad](https://marktiedemann.github.io/OffNote/)**
+**Simple notepad that works in airplane-mode.**
 
-[![](https://raw.githubusercontent.com/MarkTiedemann/OffNote/master/example.png)](https://marktiedemann.github.io/OffNote/)
+[![](https://raw.githubusercontent.com/MarkTiedemann/air.note/master/example.png)](https://marktiedemann.github.io/air.note/)
 
 ## Development
 
@@ -13,4 +13,4 @@
 
 [WTFPL](http://www.wtfpl.net/) – Do What the F*ck You Want to Public License.
 
-Made with :heart: by [@MarkTiedemann](https://twitter.com/MarkTiedemannDE).
+Made with 🔥 by [@MarkTiedemann](https://twitter.com/MarkTiedemannDE).

@@ -1,7 +1,7 @@
 {
-  "name": "OffNote",
-  "version": "0.2.0",
-  "description": "OffNote: Simple Offline Notepad",
+  "name": "air.note",
+  "version": "0.3.0",
+  "description": "Simple notepad that works in airplane-mode.",
   "devDependencies": {
     "superstatic": "^4.0.3"
   },

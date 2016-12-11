@@ -1,13 +1,13 @@
 
-const VERSION = '0.2.0'
-const PREFETCH_CACHE = `offnote-prefetch-cache-v${VERSION}`
-const RUNTIME_CACHE = `offnote-runtime-cache-v${VERSION}`
+const VERSION = '0.3.0'
+const PREFETCH_CACHE = `air.note-prefetch-cache-v${VERSION}`
+const RUNTIME_CACHE = `air.note-runtime-cache-v${VERSION}`
 const DEV_ENV = location.href.startsWith('http://localhost:3000/')
 const PREFETCH_RESOURCES = [
   '/',
-  '/favicon.png'
+  '/favicons/favicon.ico'
 ]
-.map(res => DEV_ENV ? res : '/OffNote' + res)
+.map(res => DEV_ENV ? res : '/air.note' + res)
 
 self.addEventListener('install', event => {
   event.waitUntil(
